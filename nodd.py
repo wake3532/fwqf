@@ -1,65 +1,35 @@
 import discord
-from discord.ext import commands
-import os
-import asyncio
-import random
-import urllib
-from bs4 import BeautifulSoup
-from urllib.request import Request
-from urllib import parse
-import bs4
-import time
-
 
 client = discord.Client()
 
 @client.event
 async def on_ready():
-    print('봇이 로그인 하였습니다.')
-    print(' ')
-    print('닉네임 : {}'.format(client.user.name))
-    print('아이디 : {}'.format(client.user.id))
-
-@client.event
-async def on_ready():
-    print('봇이 로그인 하였습니다.')
-    print(' ')
-    print('닉네임 : {}'.format(client.user.name))
-    print('아이디 : {}'.format(client.user.id))
-    while True:
-        user = len(client.users)
-        server = len(client.guilds)
-        messages = ["안녕하세요. ", "🌷 " , "👋  " , str(user) + "명이 우리 서버 가입중이라니. 참 기분이 좋아요..!  .", str(server) + "명이 부스트를 해주셨어요. 고마워요!"]
-        for (m) in range(5):
-            await client.change_presence(status=discord.Status.dnd, activity=discord.Activity(name=messages[(m)], type=discord.ActivityType.watching))
-            await asyncio.sleep(4)
-		
-		
-@client.event
-async def on_member_join(member):
-    try:
-        syscha = member.guild.system_channel
-        await syscha.send(f"{member.mention} 님 어서오세요! 🥳 ")
-    except:
-        pass
-
-@client.event
-async def on_member_remove(member):
-    try:
-        syscha = member.guild.system_channel
-        await syscha.send(member.name + "님 ``" + member.guild.name + "`` 안녕히가세요 ㅜ.. 😭")
-    except:
-
+    print("봇이 성공적으로 실행되었습니다.")
+    game = discord.Game('★~하는중에 표시될 네임 작성★')
+    await client.change_presence(status=discord.Status.online, activity=game)
 
 
 @client.event
 async def on_message(message):
-	
- if message.content.startswith("t/dm0777"):
-    message = message.content[4:]
-    getusermention = client.get_user(아이디)
-    await getusermention.send(message)
+    if message.guild is None:
+        if message.author.bot:
+            return
+        else:
+            embed = discord.Embed(colour=discord.Colour.blue(), timestamp=message.created_at)
+            embed.add_field(name='구매자 : ', value=message.author, inline=False)
+            embed.add_field(name='후기 내용', value=message.content, inline=False)
+            embed.set_footer(text=f'후기작성은 <@{message.author.id}> !후기작성 [후기]를 입력해주세요!')
+            await client.get_channel(809222874253492245).send(f"`{message.author.name}({message.author.id})`", embed=embed)
 
+    if message.content.startswith('>후기작성'):
+        if message.author.guild_permissions.manage_messages:
+            msg = message.content[26:]
+            await message.mentions[0].send(f"**{message.author.name}** 님의 후기 : {msg}")
+            await message.channel.send(f'`{message.mentions[0]}`님 후기를 보냈어요')
+        else:
+            return
+        
+client.run(token)
 	
 access_token = os.environ["BOT_TOKEN"]
 client.run(access_token)
