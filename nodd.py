@@ -28,8 +28,6 @@ async def on_message(message):
             await message.channel.send(f'`{message.mentions[0]}`님 후기를 보냈어요')
         else:
             return
-        
-client.run(token)
-	
+
 access_token = os.environ["BOT_TOKEN"]
 client.run(access_token)
